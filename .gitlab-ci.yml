@@ -30,6 +30,7 @@ maven-package:
     - master
   artifacts:
     paths:
+      - target/*.jar
       - .package/target/classes/docker/Dockerfile
       - .package/target/classes/k8s/deployment.yaml
 
