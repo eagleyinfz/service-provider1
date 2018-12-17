@@ -16,7 +16,7 @@ maven-build:
     - master
   artifacts:
     paths:
-      - target/lib/*.jar
+      - target/*.jar
 
 maven-package:
   stage: package
