@@ -8,46 +8,46 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-provider1
+  name: serviceprovider1
   namespace: sample
   annotations:
     getambassador.io/config: |
       ---
       apiVersion: ambassador/v0
       kind:  Mapping
-      name:  service-provider1_mapping
+      name:  serviceprovider1_mapping
       prefix:  /service-provider1
-      service: service-provider1.sample:9090
+      service: serviceprovider1.sample:9090
 spec:
   ports:
-  - name: http-service-provider1
+  - name: http-serviceprovider1
     port: 9090
-    targetPort: service-provider1
+    targetPort: serviceprovider1
   selector:
-    app: service-provider1
+    app: serviceprovider1
 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: service-provider1
+  name: serviceprovider1
   namespace: sample
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: service-provider1
+      app: serviceprovider1
   template:
     metadata:
       labels:
-        app: service-provider1
+        app: serviceprovider1
     spec:
       imagePullSecrets:
         - name: ${env.K8S_DOCKER_REGISTRY_PULL_SECRET_NAME}
         - name: ${env.K8S_DOCKER_PRIVATE_REGISTRY_PULL_SECRET_NAME}
       containers:
-      - name: service-provider1
+      - name: serviceprovider1
         image: ${env.DOCKER_PRIVATE_REGISTRY_ADDR}/sample/service-provider1:1.0-${env.CI_PIPELINE_ID}
         ports:
         - containerPort: 9090
-          name: service-provider1
+          name: serviceprovider1
