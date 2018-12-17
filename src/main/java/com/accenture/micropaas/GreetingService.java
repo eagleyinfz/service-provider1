@@ -15,6 +15,6 @@ public class GreetingService {
     }
 
     private String defaultGreeting(String username) {
-        return "Hello provider1";
+        return "Hello provider1\n";
     }
 }
