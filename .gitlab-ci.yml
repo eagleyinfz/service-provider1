@@ -1,0 +1,59 @@
+
+stages:
+  - build
+  - package
+  - image
+  - deploy
+
+maven-build:
+  stage: build
+  image: ${DOCKER_REGISTRY_ADDR}/maven:3-jdk-8
+  script:
+    - mvn clean deploy -P test --settings /maven_home/settings.xml
+  tags:
+    - shared-runner
+  only:
+    - master
+
+maven-package:
+  stage: package
+  image: ${DOCKER_REGISTRY_ADDR}/maven:3-jdk-8
+  script:
+    - cd .package
+    - mvn clean package --settings /maven_home/settings.xml -Dmaven.test.skip=true
+  tags:
+    - shared-runner
+  only:
+    - master
+  artifacts:
+    paths:
+      - .package/target/lib/*.jar
+      - .package/target/classes/docker/Dockerfile
+      - .package/target/classes/k8s/deployment.yaml
+
+build-docker-image:
+  stage: image
+  image: ${DOCKER_REGISTRY_ADDR}/docker:18
+  script:
+    - mkdir -p /root/.docker
+    - echo "$DOCKER_AUTH_CONFIG" > /root/.docker/config.json
+    - cd .package
+    - docker build -t ${DOCKER_PRIVATE_REGISTRY_ADDR}/sample/service-provider1:1.0-$CI_PIPELINE_ID -f target/classes/docker/Dockerfile .
+    - docker push ${DOCKER_PRIVATE_REGISTRY_ADDR}/sample/service-provider1:1.0-$CI_PIPELINE_ID
+    - docker rmi ${DOCKER_PRIVATE_REGISTRY_ADDR}/sample/service-provider1:1.0-$CI_PIPELINE_ID
+  tags:
+    - shared-runner
+  only:
+    - master
+
+deploy-to-k8s:
+  stage: deploy
+  image: ${DOCKER_PRIVATE_REGISTRY_ADDR}/micropaas/kubectl:1.0
+  script:
+    - echo "$K8S_KUBE_CONFIG" > /root/.kube/config
+    - kubectl apply -f .package/target/classes/k8s/deployment.yaml
+  tags:
+    - shared-runner
+  only:
+    - master
+
