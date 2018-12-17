@@ -9,11 +9,14 @@ maven-build:
   stage: build
   image: ${DOCKER_REGISTRY_ADDR}/maven:3-jdk-8
   script:
-    - mvn clean deploy -P test --settings /maven_home/settings.xml
+    - mvn clean package -P test --settings /maven_home/settings.xml
   tags:
     - shared-runner
   only:
     - master
+  artifacts:
+    paths:
+      - target/lib/*.jar
 
 maven-package:
   stage: package
@@ -27,7 +30,6 @@ maven-package:
     - master
   artifacts:
     paths:
-      - .package/target/lib/*.jar
       - .package/target/classes/docker/Dockerfile
       - .package/target/classes/k8s/deployment.yaml
 
