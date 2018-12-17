@@ -14,9 +14,6 @@ maven-build:
     - shared-runner
   only:
     - master
-  artifacts:
-    paths:
-      - target/*.jar
 
 maven-package:
   stage: package
@@ -30,7 +27,7 @@ maven-package:
     - master
   artifacts:
     paths:
-      - target/*.jar
+      - .package/target/lib/*.jar
       - .package/target/classes/docker/Dockerfile
       - .package/target/classes/k8s/deployment.yaml
 
