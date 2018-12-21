@@ -8,4 +8,7 @@ public interface GreetingController {
     @GetMapping("/greeting/{username}")
 
     String greeting(@PathVariable("username") String username) throws Exception;
+
+    @GetMapping("/greeting2/{username}")
+    String greeting2(@PathVariable("username") String username) throws Exception;
 }

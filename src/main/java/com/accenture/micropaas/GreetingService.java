@@ -14,6 +14,15 @@ public class GreetingService {
         return String.format("Hello %s!\n", username);
     }
 
+    @HystrixCommand(fallbackMethod = "defaultGreeting")
+    public String getGreeting2(String username) throws Exception {
+        if("error".equals(username)){
+            throw new Exception();
+        }
+        return String.format("Hello %s!\n", username);
+    }
+
+
     private String defaultGreeting(String username) {
         return "Hello provider1\n";
     }

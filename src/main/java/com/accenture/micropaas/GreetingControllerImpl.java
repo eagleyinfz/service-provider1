@@ -13,4 +13,9 @@ public class GreetingControllerImpl implements GreetingController {
     public String greeting(@PathVariable("username") String username) throws Exception {
         return greetingService.getGreeting(username);
     }
+
+    @Override
+    public String greeting2(@PathVariable("username") String username) throws Exception {
+        return greetingService.getGreeting2(username);
+    }
 }
